@@ -7,6 +7,9 @@ __pycache__/
 # Data (raw and processed datasets are never committed)
 /data/
 *.parquet
+*.feather
+*.h5
+*.pkl
 
 # Node / Next.js
 node_modules/

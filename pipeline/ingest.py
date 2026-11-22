@@ -209,6 +209,8 @@ def assemble(prices: pd.Series, weather: pd.DataFrame, fx: pd.Series, start: dat
     df = df.ffill(limit=MAX_FILL_HOURS)
     local_dates = df.index.date
     df["eur_pln"] = [fx[d] for d in local_dates]
+    assert df.index.tz is not None and str(df.index.tz) == TZ, "index must be Europe/Warsaw"
+    assert not df.index.duplicated().any(), "duplicate timestamps"
     missing = df.isna().sum()
     if missing.any():
         raise ValueError(f"Unfilled gaps remain:\n{missing[missing > 0]}")
