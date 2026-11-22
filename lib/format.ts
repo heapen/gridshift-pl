@@ -20,12 +20,25 @@ export function formatEur(v: number | null | undefined): string {
   return s.startsWith(MINUS) ? `${MINUS}€${s.slice(1)}` : `€${s}`;
 }
 
-/** Ratio (0.87) to percentage text ("87%"). */
-export const formatPct = (v: number | null | undefined) => (isNum(v) ? `${signed(v * 100)}%` : "n/a");
+/** Signed fixed-decimal text; values that round to zero never show a minus sign. */
+function signedFixed(v: number, digits: number): string {
+  const body = Math.abs(v).toFixed(digits);
+  return v < 0 && Number(body) !== 0 ? `${MINUS}${body}` : body;
+}
+
+/** Ratio (0.87) to percentage text: "87%", or "87.0%" with digits = 1. */
+export function formatPct(v: number | null | undefined, digits = 0): string {
+  if (!isNum(v)) return "n/a";
+  return digits === 0 ? `${signed(v * 100)}%` : `${signedFixed(v * 100, digits)}%`;
+}
 
 export const formatKw = (v: number | null | undefined) => (isNum(v) ? `${signed(v)} kW` : "n/a");
 
-export const formatKg = (v: number | null | undefined) => (isNum(v) ? `${signed(v)} kg` : "n/a");
+/** Kilograms; keeps one decimal below 10 kg so small amounts do not read as zero. */
+export function formatKg(v: number | null | undefined): string {
+  if (!isNum(v)) return "n/a";
+  return Math.abs(v) < 10 ? `${signedFixed(v, 1)} kg` : `${signed(v)} kg`;
+}
 
 /** Local clock hour "HH:00" read straight from the ISO string (keeps Warsaw time). */
 export const formatHour = (iso: string) => iso.slice(11, 16);

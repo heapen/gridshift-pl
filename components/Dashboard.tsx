@@ -31,8 +31,8 @@ export default function Dashboard({ data }: { data: DashboardData }) {
   const { days, metrics, importance, scenarios } = data;
   const dates = useMemo(() => Object.keys(days.days).sort(), [days]);
 
-  // Open on the most instructive case: a deferrable fleet on a price-spike day.
-  const [date, setDate] = useState<string>(scenarios.evening_spike);
+  // Open on the case where all four KPIs move: a deferrable fleet on a windy day.
+  const [date, setDate] = useState<string>(scenarios.high_wind);
   const [profileId, setProfileId] = useState<ProfileId>("ev_fleet");
   const [sliders, setSliders] = useState<SliderState>(defaultsFor("ev_fleet"));
   const [tab, setTab] = useState<TabId>("optimisation");

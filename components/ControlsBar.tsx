@@ -81,7 +81,7 @@ export default function ControlsBar({ dates, date, split, scenarios, onDateChang
                 title={`${SCENARIO_LABELS[key].title}: ${SCENARIO_LABELS[key].hint}`}
                 aria-label={`${SCENARIO_LABELS[key].title}, ${scenarios[key]}`}
                 aria-pressed={active}
-                className={`min-w-0 rounded-lg border px-2 py-2 text-left text-sm transition-colors sm:px-3 ${
+                className={`flex min-w-0 flex-col justify-start rounded-lg border px-2 py-2 text-left text-sm transition-colors sm:px-3 ${
                   active
                     ? "border-accent bg-accent-soft text-ink"
                     : "border-border bg-surface-2 text-ink-2 hover:border-accent hover:text-ink"

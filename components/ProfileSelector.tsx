@@ -21,7 +21,7 @@ export default function ProfileSelector({ value, onChange }: { value: ProfileId;
               onClick={() => onChange(id)}
               aria-pressed={active}
               aria-label={p.name}
-              className={`min-w-0 rounded-xl border px-2 py-2 text-left transition-colors lg:p-3 ${
+              className={`flex min-w-0 flex-col justify-start rounded-xl border px-2 py-2 text-left transition-colors lg:p-3 ${
                 active ? "border-accent bg-accent-soft" : "border-border bg-surface-2 hover:border-accent"
               }`}
             >

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatChangePct, formatEur, hourLabels, formatHour, formatKw, formatPct, formatPln } from "@/lib/format";
+import { formatChangePct, formatEur, formatHour, formatKg, formatKw, formatPct, formatPln, hourLabels } from "@/lib/format";
 
 describe("format helpers", () => {
   it("returns n/a for null and non-finite values", () => {
@@ -39,5 +39,21 @@ describe("hourLabels", () => {
   it("marks the repeated autumn 02:00 so both hours stay distinct", () => {
     const ts = ["2026-10-25T01:00:00+02:00", "2026-10-25T02:00:00+02:00", "2026-10-25T02:00:00+01:00", "2026-10-25T03:00:00+01:00"];
     expect(hourLabels(ts)).toEqual(["01:00", "02:00", "02:00*", "03:00"]);
+  });
+});
+
+describe("KPI precision", () => {
+  it("does not round a near-perfect capture rate up to 100%", () => {
+    expect(formatPct(0.9954, 1)).toBe("99.5%");
+    expect(formatPct(1, 1)).toBe("100.0%");
+    expect(formatPct(0, 1)).toBe("0.0%");
+    expect(formatPct(-0.0001, 1)).toBe("0.0%");
+  });
+
+  it("keeps a decimal for small CO2 amounts so they do not read as zero", () => {
+    expect(formatKg(0.2894)).toBe("0.3 kg");
+    expect(formatKg(-8.04)).toBe("−8.0 kg");
+    expect(formatKg(23.4)).toBe("23 kg");
+    expect(formatKg(-0.01)).toBe("0.0 kg");
   });
 });

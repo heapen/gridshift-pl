@@ -42,10 +42,10 @@ export default function KpiCards({ result }: { result: OptimizerResult }) {
       </Card>
       <Card
         label="Capture rate"
-        value={formatPct(capture)}
+        value={formatPct(capture, 1)}
         sub={capture === null ? "No shifting opportunity" : `of ${formatPln(result.perfectSavingsPln)} perfect foresight`}
       />
-      <Card label="Peak load reduction" value={formatPct(result.peakReductionPct / 100)} sub="vs. unshifted daily peak" />
+      <Card label="Peak load reduction" value={formatPct(result.peakReductionPct / 100, 1)} sub="vs. unshifted daily peak" />
       <Card label="CO₂ reduction (est.)" value={formatKg(result.co2ReductionKg)} sub="Weather-based intensity proxy" />
     </section>
   );
