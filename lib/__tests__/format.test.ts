@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatEur, formatHour, formatKw, formatPct, formatPln } from "@/lib/format";
+import { formatChangePct, formatEur, formatHour, formatKw, formatPct, formatPln } from "@/lib/format";
 
 describe("format helpers", () => {
   it("returns n/a for null and non-finite values", () => {
@@ -24,5 +24,13 @@ describe("format helpers", () => {
     expect(formatHour("2026-10-25T02:00:00+02:00")).toBe("02:00");
     expect(formatHour("2026-10-25T02:00:00+01:00")).toBe("02:00");
     expect(formatHour("2026-11-09T17:00:00+01:00")).toBe("17:00");
+  });
+});
+
+describe("formatChangePct", () => {
+  it("shows an error reduction as a minus and an increase as a plus", () => {
+    expect(formatChangePct(21.2)).toBe("−21.2%");
+    expect(formatChangePct(-5)).toBe("+5.0%");
+    expect(formatChangePct(0)).toBe("0.0%");
   });
 });

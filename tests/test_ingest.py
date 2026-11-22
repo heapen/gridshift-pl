@@ -91,3 +91,25 @@ def test_eur_pln_ffill_weekend():
     filled = ingest.fill_daily_rates(rates, date(2026, 11, 6), date(2026, 11, 8))
     assert list(filled.values) == [4.25, 4.25, 4.25]
     assert list(filled.index) == [date(2026, 11, 6), date(2026, 11, 7), date(2026, 11, 8)]
+
+
+def _assemble_inputs(gap_hours: int):
+    start, end = date(2026, 11, 2), date(2026, 11, 2)
+    idx = pd.date_range(pd.Timestamp(start, tz="Europe/Warsaw"), periods=24, freq="h", name="timestamp")
+    prices = pd.Series(range(24), index=idx, dtype=float, name="price_pln_mwh")
+    prices.iloc[5 : 5 + gap_hours] = float("nan")
+    prices = prices.dropna()
+    weather = pd.DataFrame({"warsaw_temperature_2m": 5.0}, index=idx)
+    fx = pd.Series({start: 4.25})
+    return prices, weather, fx, start, end
+
+
+def test_assemble_fills_gap_up_to_two_hours():
+    df = ingest.assemble(*_assemble_inputs(2))
+    assert df["price_pln_mwh"].isna().sum() == 0
+    assert df["price_pln_mwh"].iloc[6] == 4.0  # forward-filled from 04:00
+
+
+def test_assemble_rejects_gap_longer_than_two_hours():
+    with pytest.raises(ValueError):
+        ingest.assemble(*_assemble_inputs(3))

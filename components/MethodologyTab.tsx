@@ -53,7 +53,7 @@ export default function MethodologyTab({ metrics }: { metrics: Metrics }) {
         <p>
           A linear programme decides <Code>x[s,t] ≥ 0</Code>, the kW moved from hour s to hour t within the shift
           window. It is subject to a per-hour flexible share, availability hours (an EV fleet can only charge while
-          plugged in, 16:00–07:00), the contracted capacity (equal to the current site peak) and energy
+          plugged in, 16:00–07:00; each calendar day is optimised on its own, so evening load is not moved past midnight), the contracted capacity (equal to the current site peak) and energy
           conservation. It minimises energy cost plus a peak demand charge. The schedule is
           planned on the forecast price and billed on the actual price. The same LP solved on actual prices gives
           the perfect-foresight bound, and the capture rate is realised savings divided by that bound.

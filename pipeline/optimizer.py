@@ -149,6 +149,10 @@ def write_parity_fixtures(days_path=PUBLIC_DATA / "days.json", out_path=PARITY_P
     """Solve every profile x scenario day x slider setting and save inputs + KPIs."""
     days = json.loads(days_path.read_text(encoding="utf-8"))["days"]
     scenarios = json.loads((PUBLIC_DATA / "scenarios.json").read_text(encoding="utf-8"))
+    # Also cover any DST transition day in the window (23 or 25 local hours).
+    for iso, day in sorted(days.items()):
+        if len(day["hours"]) != 24:
+            scenarios[f"dst_{iso}"] = iso
     cases = []
     for profile in PROFILES.values():
         settings = [

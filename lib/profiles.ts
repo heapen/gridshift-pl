@@ -28,7 +28,7 @@ export const PROFILES: Record<ProfileId, Profile> = {
   ev_fleet: {
     id: "ev_fleet",
     name: "EV Fleet Charging Depot",
-    description: "Last-mile delivery fleet, plugged in 16:00-07:00; charging is highly deferrable overnight.",
+    description: "Last-mile delivery fleet, plugged in 16:00-07:00; charging can be deferred within the evening and within the early-morning window.",
     baseKw: [650, 520, 380, 260, 180, 150, 140, 130, 120, 120, 130, 140, 150, 160, 180, 250, 450, 800, 1100, 1200, 1200, 1150, 1000, 820],
     flexPct: 0.7,
     windowH: 8,

@@ -62,7 +62,7 @@ PROFILES: dict[str, Profile] = {
     "ev_fleet": Profile(
         id="ev_fleet",
         name="EV Fleet Charging Depot",
-        description="Last-mile delivery fleet, plugged in 16:00-07:00; charging is highly deferrable overnight.",
+        description="Last-mile delivery fleet, plugged in 16:00-07:00; charging can be deferred within the evening and within the early-morning window.",
         base_kw=(
             650, 520, 380, 260, 180, 150, 140, 130, 120, 120, 130, 140,
             150, 160, 180, 250, 450, 800, 1100, 1200, 1200, 1150, 1000, 820,

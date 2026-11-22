@@ -35,3 +35,16 @@ export function formatDate(isoDate: string): string {
   const d = new Date(`${isoDate}T12:00:00Z`);
   return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
 }
+
+/**
+ * Error change vs. a baseline, given as an improvement percentage
+ * (positive = lower error). 21.2 -> "−21.2%", -5 -> "+5.0%".
+ */
+export function formatChangePct(improvementPct: number): string {
+  if (!Number.isFinite(improvementPct)) return "n/a";
+  const change = -improvementPct;
+  const body = Math.abs(change).toFixed(1);
+  if (change < 0) return `${MINUS}${body}%`;
+  if (change > 0) return `+${body}%`;
+  return `${body}%`;
+}

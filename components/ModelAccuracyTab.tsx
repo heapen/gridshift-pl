@@ -3,7 +3,7 @@
 import { Bar, BarChart, CartesianGrid, LabelList, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { DayData, FeatureImportance, Metrics } from "@/lib/types";
 import { FEATURE_LABELS } from "@/lib/constants";
-import { formatHour } from "@/lib/format";
+import { formatChangePct, formatHour } from "@/lib/format";
 import { AXIS_PROPS, ChartFrame, makeTooltip } from "./ChartFrame";
 
 interface Props {
@@ -41,8 +41,8 @@ function MetricsTable({ metrics }: { metrics: Metrics }) {
           ))}
           <tr className="border-t border-border">
             <td className="py-2 text-ink-2">Improvement vs. persistence</td>
-            <td className="py-2 text-right font-semibold text-good">−{metrics.maeImprovementPct}%</td>
-            <td className="py-2 text-right font-semibold text-good">−{metrics.rmseImprovementPct}%</td>
+            <td className={`py-2 text-right font-semibold ${metrics.maeImprovementPct > 0 ? "text-good" : "text-critical"}`}>{formatChangePct(metrics.maeImprovementPct)}</td>
+            <td className={`py-2 text-right font-semibold ${metrics.rmseImprovementPct > 0 ? "text-good" : "text-critical"}`}>{formatChangePct(metrics.rmseImprovementPct)}</td>
           </tr>
         </tbody>
       </table>

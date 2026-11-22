@@ -61,6 +61,16 @@ describe("solver invariants", () => {
   });
 });
 
+describe("fixture coverage", () => {
+  it("includes a DST transition day", () => {
+    expect(fixtures.cases.some((c) => c.input.base.length !== 24)).toBe(true);
+  });
+  it("uses the same demand charge as the UI", async () => {
+    const { DEMAND_CHARGE_PLN_PER_KW_DAY } = await import("@/lib/constants");
+    for (const c of fixtures.cases) expect(c.input.demandCharge).toBe(DEMAND_CHARGE_PLN_PER_KW_DAY);
+  });
+});
+
 describe("profiles", () => {
   it("match the Python source of truth", () => {
     for (const [id, py] of Object.entries(fixtures.profiles)) {
@@ -70,6 +80,7 @@ describe("profiles", () => {
       expect(ts.windowH).toBe(py.window_h);
       expect(ts.capacityFactor).toBe(py.capacity_factor);
       expect(ts.name).toBe(py.name);
+      expect(ts.description).toBe(py.description);
       expect(ts.availableHours).toEqual(py.available_hours);
     }
   });

@@ -11,7 +11,7 @@ GridShift PL is an interactive simulator built on real Polish market data. It pl
 | **Stack** | Python (pandas, LightGBM, SciPy HiGHS) · Next.js 15 (App Router, TypeScript, Tailwind CSS, Recharts) |
 | **Data** | 18,244 quarter-hourly RCE prices, aggregated to 4,561 hourly rows across 190 days, plus weather for 4 cities and daily EUR/PLN. All sources are keyless public APIs. |
 | **Model** | 24h-ahead LightGBM: **MAE 212 PLN/MWh, 21.2% better than naive persistence** on a 60-day out-of-sample walk-forward test |
-| **Optimiser** | Linear programme in Python (reference) and TypeScript (in-browser), parity-tested on 18 fixture cases. A solve takes about 3 ms in the browser. |
+| **Optimiser** | Linear programme in Python (reference) and TypeScript (in-browser), parity-tested on 24 fixture cases. A solve takes about 3 ms in the browser. |
 | **Deploy** | Static Next.js build with no Python runtime and no secrets. Ready for Vercel. |
 
 ---
@@ -70,7 +70,7 @@ where       L_t = b_t − Σ_t' x[t,t'] + Σ_s x[s,t]    (energy conserved by co
 ```
 
 - **Plan on the forecast, bill on actuals.** The schedule is optimised on the forecast price p̂ and costed on the actual price p. Solving the same LP on p gives the **perfect-foresight** bound. The **capture rate** is realised savings divided by that bound, which turns forecast quality into money.
-- **Two solvers, one formulation.** SciPy HiGHS is the reference. `javascript-lp-solver` re-solves in the browser whenever a slider moves. A vitest suite checks every KPI against Python on 18 fixtures: 3 profiles × 3 scenario days × 2 slider settings.
+- **Two solvers, one formulation.** SciPy HiGHS is the reference. `javascript-lp-solver` re-solves in the browser whenever a slider moves. A vitest suite checks every KPI against Python on 24 fixtures: 3 profiles × (3 scenario days + the 25-hour DST day) × 2 slider settings.
 
 **Results on the three scenario days** (out-of-sample days, default profile settings, PLN per day):
 
@@ -139,11 +139,11 @@ pip install -r requirements.txt
 python -m pipeline.ingest      # ~1 min: fetch RCE, weather, FX -> data/processed/*.parquet
 python -m pipeline.forecast    # train, evaluate, export public/data/*.json
 python -m pipeline.optimizer   # reference LP + TypeScript parity fixtures
-pytest -q                      # 26 tests
+pytest -q                      # 28 tests
 
 # Web app
 npm install
-npm test                       # 27 vitest tests (incl. Python parity)
+npm test                       # 36 vitest tests (incl. Python parity)
 npm run dev                    # http://localhost:3000
 npm run build                  # static production build
 ```
