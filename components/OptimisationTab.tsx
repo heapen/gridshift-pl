@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { Area, CartesianGrid, ComposedChart, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { DayData, OptimizerResult } from "@/lib/types";
-import { formatHour } from "@/lib/format";
+import { hourLabels } from "@/lib/format";
 import { AXIS_PROPS, ChartFrame, makeTooltip } from "./ChartFrame";
 
 interface Props {
@@ -18,11 +18,10 @@ const LoadTooltip = makeTooltip("kW");
 export default function OptimisationTab({ day, base, result }: Props) {
   const rows = useMemo(
     () =>
-      day.hours.map((h, i) => ({
-        // repeated autumn 02:00 gets a marker so both hours stay distinct on the axis
-        hour: i > 0 && formatHour(h.ts) === formatHour(day.hours[i - 1].ts) ? `${formatHour(h.ts)}*` : formatHour(h.ts),
-        actual: h.actual,
-        forecast: h.forecast,
+      hourLabels(day.hours.map((h) => h.ts)).map((label, i) => ({
+        hour: label,
+        actual: day.hours[i].actual,
+        forecast: day.hours[i].forecast,
         base: Math.round(base[i]),
         shifted: Math.round(result.shiftedKw[i]),
       })),

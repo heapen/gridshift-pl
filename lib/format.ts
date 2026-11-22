@@ -48,3 +48,10 @@ export function formatChangePct(improvementPct: number): string {
   if (change > 0) return `+${body}%`;
   return `${body}%`;
 }
+
+/** Axis labels for a day's hours; the repeated autumn DST hour gets a "*" suffix. */
+export function hourLabels(timestamps: string[]): string[] {
+  return timestamps.map((ts, i) =>
+    i > 0 && formatHour(ts) === formatHour(timestamps[i - 1]) ? `${formatHour(ts)}*` : formatHour(ts),
+  );
+}

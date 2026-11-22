@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatChangePct, formatEur, formatHour, formatKw, formatPct, formatPln } from "@/lib/format";
+import { formatChangePct, formatEur, hourLabels, formatHour, formatKw, formatPct, formatPln } from "@/lib/format";
 
 describe("format helpers", () => {
   it("returns n/a for null and non-finite values", () => {
@@ -32,5 +32,12 @@ describe("formatChangePct", () => {
     expect(formatChangePct(21.2)).toBe("−21.2%");
     expect(formatChangePct(-5)).toBe("+5.0%");
     expect(formatChangePct(0)).toBe("0.0%");
+  });
+});
+
+describe("hourLabels", () => {
+  it("marks the repeated autumn 02:00 so both hours stay distinct", () => {
+    const ts = ["2026-10-25T01:00:00+02:00", "2026-10-25T02:00:00+02:00", "2026-10-25T02:00:00+01:00", "2026-10-25T03:00:00+01:00"];
+    expect(hourLabels(ts)).toEqual(["01:00", "02:00", "02:00*", "03:00"]);
   });
 });

@@ -145,7 +145,7 @@ pytest -q                      # 28 tests
 
 # Web app
 npm install
-npm test                       # 36 vitest tests (incl. Python parity)
+npm test                       # 37 vitest tests (incl. Python parity)
 npm run dev                    # http://localhost:3000
 npm run build                  # static production build
 ```

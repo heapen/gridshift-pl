@@ -3,7 +3,7 @@
 import { Bar, BarChart, CartesianGrid, LabelList, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { DayData, FeatureImportance, Metrics } from "@/lib/types";
 import { FEATURE_LABELS } from "@/lib/constants";
-import { formatChangePct, formatHour } from "@/lib/format";
+import { formatChangePct, hourLabels } from "@/lib/format";
 import { AXIS_PROPS, ChartFrame, makeTooltip } from "./ChartFrame";
 
 interface Props {
@@ -55,8 +55,9 @@ function MetricsTable({ metrics }: { metrics: Metrics }) {
 }
 
 export default function ModelAccuracyTab({ day, date, metrics, importance }: Props) {
-  const rows = day.hours.map((h) => ({
-    hour: formatHour(h.ts),
+  const labels = hourLabels(day.hours.map((h) => h.ts));
+  const rows = day.hours.map((h, i) => ({
+    hour: labels[i],
     actual: h.actual,
     forecast: h.forecast,
     persistence: h.persistence,
