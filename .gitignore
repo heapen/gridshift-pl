@@ -23,3 +23,6 @@ out/
 .vercel
 next-env.d.ts
 .claude/
+
+# Personal notes
+STUDY_GUIDE.md
