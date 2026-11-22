@@ -2,6 +2,8 @@
 
 **Industrial load shifting and energy-cost optimisation on the Polish wholesale electricity market (RCE).**
 
+**Live demo:** [gridshift-pl.vercel.app](https://gridshift-pl.vercel.app)
+
 GridShift PL is an interactive simulator built on real Polish market data. It plans a factory's flexible load on a 24-hour-ahead price forecast, then bills that plan on the **actual** RCE price. The savings it reports are therefore what the site would really have achieved, not what perfect hindsight would allow.
 
 ![GridShift PL dashboard](docs/screenshots/dashboard-light.png)
