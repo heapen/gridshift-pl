@@ -5,7 +5,7 @@ __pycache__/
 .pytest_cache/
 
 # Data (raw and processed datasets are never committed)
-data/
+/data/
 *.parquet
 
 # Node / Next.js

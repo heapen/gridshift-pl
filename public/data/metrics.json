@@ -1,0 +1,1 @@
+{"generatedAt":"2026-11-22T09:21:17+00:00","model":{"mae":212.33,"rmse":342.39},"persistence":{"mae":269.44,"rmse":411.39},"maeImprovementPct":21.2,"rmseImprovementPct":16.8,"testStart":"2026-09-23","testEnd":"2026-11-21","trainStart":"2026-05-26","trainEnd":"2026-09-22","testHours":1441,"trainHours":2880,"refitEveryDays":7}
