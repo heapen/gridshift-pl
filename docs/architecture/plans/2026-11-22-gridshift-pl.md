@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.11+, pandas, pyarrow, requests, holidays, lightgbm, scikit-learn, scipy, pytest · Node 20+, Next.js (App Router), TypeScript, Tailwind CSS, Recharts, javascript-lp-solver, vitest.
 
-**Spec:** `docs/superpowers/specs/2026-11-22-gridshift-pl-design.md`
+**Spec:** `docs/architecture/specs/2026-11-22-gridshift-pl-design.md`
 
 ## Global Constraints
 

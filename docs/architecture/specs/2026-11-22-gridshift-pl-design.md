@@ -126,7 +126,7 @@ gridshift-pl/
   lib/optimizer.ts   # Module C (browser LP, javascript-lp-solver)
   lib/__tests__/     # vitest, incl. parity fixtures from Python
   public/data/       # committed JSON
-  docs/superpowers/specs/
+  docs/architecture/specs/
   README.md
 ```
 
