@@ -1,9 +1,9 @@
-.venv
-data
-.superpowers
-.claude
-tests
+/.venv
+/data
+/.superpowers
+/.claude
+/tests
 __pycache__
 .pytest_cache
-.next
-node_modules
+/.next
+/node_modules
