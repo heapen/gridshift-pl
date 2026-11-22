@@ -1,0 +1,8 @@
+pandas>=2.2
+pyarrow>=16
+requests>=2.32
+holidays>=0.50
+lightgbm>=4.3
+scikit-learn>=1.5
+scipy>=1.13
+pytest>=8.2

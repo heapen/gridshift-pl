@@ -1,0 +1,20 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Data (raw and processed datasets are never committed)
+data/
+*.parquet
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# Env & tooling
+.env*
+.superpowers/
+.vercel
