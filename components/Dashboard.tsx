@@ -64,13 +64,13 @@ export default function Dashboard({ data }: { data: DashboardData }) {
   };
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-8 sm:px-6">
-      <header className="mb-6">
+    <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-6 sm:px-6 sm:pt-8">
+      <header className="mb-4 sm:mb-6">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">GridShift PL</p>
         <h1 className="mt-1 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
           Industrial load shifting on the Polish RCE market
         </h1>
-        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ink-2">
+        <p className="mt-2 max-w-3xl text-[13px] leading-relaxed text-ink-2 sm:text-sm">
           Pick a real market day and a facility. The optimiser plans flexible load on a 24h-ahead
           price forecast (made before the day-ahead gate closure), then bills that plan on the
           actual RCE price — so the savings shown are what the site would really have achieved.
@@ -85,7 +85,7 @@ export default function Dashboard({ data }: { data: DashboardData }) {
           scenarios={scenarios}
           onDateChange={setDate}
         />
-        <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:mt-5 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
           <ProfileSelector value={profileId} onChange={selectProfile} />
           <SliderPanel profile={profile} value={sliders} onChange={setSliders} />
         </div>

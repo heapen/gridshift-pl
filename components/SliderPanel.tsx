@@ -41,7 +41,7 @@ function Slider({ id, label, display, hint, min, max, step, value, onChange }: S
         onChange={(e) => onChange(Number(e.target.value))}
         className="mt-2 w-full"
       />
-      <p className="mt-1 text-xs text-ink-3">{hint}</p>
+      <p className="mt-1 hidden text-xs text-ink-3 sm:block">{hint}</p>
     </div>
   );
 }
@@ -49,7 +49,7 @@ function Slider({ id, label, display, hint, min, max, step, value, onChange }: S
 export default function SliderPanel({ profile, value, onChange }: Props) {
   const peak = Math.max(...profile.baseKw) * value.scale;
   return (
-    <fieldset className="grid content-start gap-5">
+    <fieldset className="grid content-start gap-4 sm:gap-5">
       <legend className="mb-2 text-xs font-medium uppercase tracking-wide text-ink-3">Flexibility constraints</legend>
       <Slider
         id="scale"

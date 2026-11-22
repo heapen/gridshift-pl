@@ -71,23 +71,26 @@ export default function ControlsBar({ dates, date, split, scenarios, onDateChang
 
       <div>
         <p className="text-xs font-medium uppercase tracking-wide text-ink-3">Market scenarios</p>
-        <div className="mt-1 grid gap-2 sm:grid-cols-3">
+        <div className="mt-1 grid grid-cols-3 gap-2">
           {ORDER.map((key) => {
             const active = scenarios[key] === date;
             return (
               <button
                 key={key}
                 onClick={() => pick(scenarios[key])}
-                title={SCENARIO_LABELS[key].hint}
+                title={`${SCENARIO_LABELS[key].title}: ${SCENARIO_LABELS[key].hint}`}
+                aria-label={`${SCENARIO_LABELS[key].title}, ${scenarios[key]}`}
                 aria-pressed={active}
-                className={`rounded-lg border px-3 py-2 text-left text-sm transition-colors ${
+                className={`min-w-0 rounded-lg border px-2 py-2 text-left text-sm transition-colors sm:px-3 ${
                   active
                     ? "border-accent bg-accent-soft text-ink"
                     : "border-border bg-surface-2 text-ink-2 hover:border-accent hover:text-ink"
                 }`}
               >
-                <span className="block font-medium">{SCENARIO_LABELS[key].title}</span>
-                <span className="block text-xs text-ink-3 tabular">{scenarios[key]}</span>
+                <span className="block font-medium leading-snug sm:hidden">{SCENARIO_LABELS[key].short}</span>
+                <span className="hidden font-medium sm:block">{SCENARIO_LABELS[key].title}</span>
+                <span className="block text-[11px] text-ink-3 tabular sm:hidden">{scenarios[key].slice(5)}</span>
+                <span className="hidden text-xs text-ink-3 tabular sm:block">{scenarios[key]}</span>
               </button>
             );
           })}

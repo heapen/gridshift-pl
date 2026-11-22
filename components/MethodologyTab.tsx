@@ -16,7 +16,7 @@ const Code = ({ children }: { children: React.ReactNode }) => (
 
 export default function MethodologyTab({ metrics }: { metrics: Metrics }) {
   return (
-    <div className="grid max-w-3xl gap-6">
+    <div className="grid max-w-3xl grid-cols-1 gap-6">
       <Section title="1. Data">
         <p>
           Quarter-hourly RCE prices come from the PSE Open Data v2 API, and are averaged to hourly values. Hourly

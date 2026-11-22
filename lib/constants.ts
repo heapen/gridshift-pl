@@ -5,9 +5,16 @@ export const DEMAND_CHARGE_PLN_PER_KW_DAY = 0.6;
 export const KOBIZE_FACTOR_KG_MWH = 597;
 
 export const SCENARIO_LABELS = {
-  high_wind: { title: "High Wind / Renewable Surplus", hint: "Low prices driven by strong wind" },
-  evening_spike: { title: "Evening Peak Price Spike", hint: "Widest evening-vs-trough spread" },
-  typical_weekday: { title: "Typical Weekday Baseline", hint: "Daily mean closest to the median" },
+  high_wind: { title: "High Wind / Renewable Surplus", short: "High wind", hint: "Low prices driven by strong wind" },
+  evening_spike: { title: "Evening Peak Price Spike", short: "Evening spike", hint: "Widest evening-vs-trough spread" },
+  typical_weekday: { title: "Typical Weekday Baseline", short: "Typical day", hint: "Daily mean closest to the median" },
+} as const;
+
+/** Compact facility names for narrow (phone) layouts. */
+export const PROFILE_SHORT_NAMES = {
+  cold_storage: "Cold storage",
+  cnc_plant: "CNC plant",
+  ev_fleet: "EV fleet",
 } as const;
 
 export const FEATURE_LABELS: Record<string, string> = {

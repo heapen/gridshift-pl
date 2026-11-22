@@ -13,6 +13,7 @@ interface Props {
 }
 
 const PriceTooltip = makeTooltip("PLN/MWh");
+const SIX_HOUR_TICKS = ["00:00", "06:00", "12:00", "18:00", "24:00"];
 const LoadTooltip = makeTooltip("kW");
 
 export default function OptimisationTab({ day, base, result }: Props) {
@@ -31,7 +32,7 @@ export default function OptimisationTab({ day, base, result }: Props) {
   const chartRows = useMemo(() => [...rows, { ...rows[rows.length - 1], hour: "24:00" }], [rows]);
 
   return (
-    <div className="grid gap-6">
+    <div className="grid grid-cols-1 gap-6">
       <ChartFrame
         title="RCE price"
         unit="PLN/MWh"
@@ -42,9 +43,9 @@ export default function OptimisationTab({ day, base, result }: Props) {
       >
         <div className="h-56 w-full">
           <ResponsiveContainer>
-            <LineChart data={chartRows} syncId="day" margin={{ top: 6, right: 8, bottom: 0, left: 0 }}>
+            <LineChart data={chartRows} syncId="day" margin={{ top: 6, right: 16, bottom: 0, left: 0 }}>
               <CartesianGrid vertical={false} stroke="var(--grid)" />
-              <XAxis dataKey="hour" {...AXIS_PROPS} interval="preserveStartEnd" minTickGap={18} />
+              <XAxis dataKey="hour" {...AXIS_PROPS} ticks={SIX_HOUR_TICKS} interval={0} />
               <YAxis {...AXIS_PROPS} width={48} />
               <Tooltip content={<PriceTooltip />} cursor={{ stroke: "var(--text-3)", strokeDasharray: "3 3" }} />
               <Line isAnimationActive={false} type="stepAfter" dataKey="actual" name="Actual RCE" stroke="var(--series-1)" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
@@ -64,9 +65,9 @@ export default function OptimisationTab({ day, base, result }: Props) {
       >
         <div className="h-56 w-full">
           <ResponsiveContainer>
-            <ComposedChart data={chartRows} syncId="day" margin={{ top: 6, right: 8, bottom: 0, left: 0 }}>
+            <ComposedChart data={chartRows} syncId="day" margin={{ top: 6, right: 16, bottom: 0, left: 0 }}>
               <CartesianGrid vertical={false} stroke="var(--grid)" />
-              <XAxis dataKey="hour" {...AXIS_PROPS} interval="preserveStartEnd" minTickGap={18} />
+              <XAxis dataKey="hour" {...AXIS_PROPS} ticks={SIX_HOUR_TICKS} interval={0} />
               <YAxis {...AXIS_PROPS} width={48} />
               <Tooltip content={<LoadTooltip />} cursor={{ stroke: "var(--text-3)", strokeDasharray: "3 3" }} />
               <Area isAnimationActive={false} type="stepAfter" dataKey="shifted" name="Optimised" stroke="var(--series-3)" strokeWidth={2} fill="var(--series-3)" fillOpacity={0.18} activeDot={{ r: 4 }} />
@@ -76,7 +77,7 @@ export default function OptimisationTab({ day, base, result }: Props) {
         </div>
       </ChartFrame>
 
-      <details className="rounded-xl border border-border bg-surface-2 p-3 text-sm">
+      <details className="min-w-0 rounded-xl border border-border bg-surface-2 p-3 text-sm">
         <summary className="cursor-pointer font-medium text-ink">Hourly table ({rows.length} hours)</summary>
         <div className="mt-3 overflow-x-auto">
           <table className="w-full min-w-[520px] text-right text-xs tabular">

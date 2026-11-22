@@ -14,6 +14,7 @@ interface Props {
 }
 
 const PriceTooltip = makeTooltip("PLN/MWh");
+const SIX_HOUR_TICKS = ["00:00", "06:00", "12:00", "18:00", "23:00"];
 const ShareTooltip = makeTooltip("%", 1);
 
 function MetricsTable({ metrics }: { metrics: Metrics }) {
@@ -22,8 +23,8 @@ function MetricsTable({ metrics }: { metrics: Metrics }) {
     { name: "Naive persistence (D-1)", ...metrics.persistence, strong: false },
   ];
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[420px] text-sm tabular">
+    <div className="min-w-0 overflow-x-auto">
+      <table className="w-full text-sm tabular">
         <thead>
           <tr className="text-left text-xs uppercase tracking-wide text-ink-3">
             <th className="pb-2 font-medium">Model</th>
@@ -68,8 +69,8 @@ export default function ModelAccuracyTab({ day, date, metrics, importance }: Pro
   }));
 
   return (
-    <div className="grid gap-8">
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
+    <div className="grid grid-cols-1 gap-8">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
         <div>
           <h3 className="mb-3 text-sm font-semibold text-ink">Forecast accuracy, test period</h3>
           <MetricsTable metrics={metrics} />
@@ -85,9 +86,9 @@ export default function ModelAccuracyTab({ day, date, metrics, importance }: Pro
         >
           <div className="h-60 w-full">
             <ResponsiveContainer>
-              <LineChart data={rows} margin={{ top: 6, right: 8, bottom: 0, left: 0 }}>
+              <LineChart data={rows} margin={{ top: 6, right: 16, bottom: 0, left: 0 }}>
                 <CartesianGrid vertical={false} stroke="var(--grid)" />
-                <XAxis dataKey="hour" {...AXIS_PROPS} interval="preserveStartEnd" minTickGap={18} />
+                <XAxis dataKey="hour" {...AXIS_PROPS} ticks={SIX_HOUR_TICKS} interval={0} />
                 <YAxis {...AXIS_PROPS} width={48} />
                 <Tooltip content={<PriceTooltip />} cursor={{ stroke: "var(--text-3)", strokeDasharray: "3 3" }} />
                 <Line isAnimationActive={false} type="monotone" dataKey="actual" name="Actual" stroke="var(--series-1)" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
@@ -108,7 +109,7 @@ export default function ModelAccuracyTab({ day, date, metrics, importance }: Pro
             <BarChart data={featRows} layout="vertical" margin={{ top: 0, right: 48, bottom: 0, left: 0 }} barCategoryGap={4}>
               <CartesianGrid horizontal={false} stroke="var(--grid)" />
               <XAxis type="number" {...AXIS_PROPS} unit="%" />
-              <YAxis type="category" dataKey="name" {...AXIS_PROPS} width={150} interval={0} />
+              <YAxis type="category" dataKey="name" {...AXIS_PROPS} width={132} interval={0} tick={{ fill: "var(--text-3)", fontSize: 10.5 }} />
               <Tooltip content={<ShareTooltip />} cursor={{ fill: "var(--surface-2)" }} />
               <Bar isAnimationActive={false} dataKey="share" name="Gain share" fill="var(--series-1)" radius={[0, 4, 4, 0]} maxBarSize={18}>
                 <LabelList dataKey="share" position="right" formatter={(v: number) => `${v}%`} fill="var(--text-2)" fontSize={11} />
