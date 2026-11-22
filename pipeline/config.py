@@ -28,6 +28,12 @@ WEATHER_VARS = ("temperature_2m", "wind_speed_100m", "shortwave_radiation")
 # (December 2024 edition, end-user factor: 597 kg CO2/MWh).
 KOBIZE_FACTOR_KG_MWH = 597.0
 
+# Peak demand charge used by the optimiser, in PLN per kW of daily peak load.
+# Assumption: ~18 PLN/kW-month capacity-related distribution charge for a
+# medium-voltage industrial connection, spread over 30 days. Documented as an
+# assumption in the UI and README; it gives the peak-reduction KPI a price.
+DEMAND_CHARGE_PLN_PER_KW_DAY = 0.6
+
 ROOT = Path(__file__).resolve().parent.parent
 DATA_RAW = ROOT / "data" / "raw"
 DATA_PROCESSED = ROOT / "data" / "processed"
