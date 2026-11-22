@@ -6,6 +6,7 @@
  *              P      >= 0  daily peak load (kW)
  *   minimise   sum_{s,t} x[s,t] * (p_t - p_s) / 1000  +  lambda * P
  *   subject to sum_t x[s,t] <= f * b_s                    (flexible share)
+ *              x[s,t] = 0 unless s and t are available    (e.g. EV plugged in)
  *              b_t - out_t + in_t <= C                    (contracted capacity)
  *              b_t - out_t + in_t - P <= 0                (peak definition)
  *
@@ -27,9 +28,11 @@ export function solve(
   window: number,
   capacityKw: number,
   demandCharge: number,
+  available?: boolean[],
 ): number[] {
   const n = base.length;
   if (flex <= 0 || window <= 0) return [...base];
+  const ok = (h: number) => (available ? available[h] : true);
 
   const constraints: LpModel["constraints"] = {};
   const variables: LpModel["variables"] = {};
@@ -41,7 +44,7 @@ export function solve(
   const pairs: [number, number][] = [];
   for (let s = 0; s < n; s++) {
     for (let t = 0; t < n; t++) {
-      if (s === t || Math.abs(s - t) > window) continue;
+      if (s === t || Math.abs(s - t) > window || !ok(s) || !ok(t)) continue;
       pairs.push([s, t]);
       variables[varName(s, t)] = {
         cost: (planPrice[t] - planPrice[s]) / 1000,
@@ -53,6 +56,8 @@ export function solve(
       };
     }
   }
+  if (pairs.length === 0) return [...base];
+
   const peakVar: Record<string, number> = { cost: demandCharge };
   for (let t = 0; t < n; t++) peakVar[`pk_${t}`] = -1;
   variables[PEAK] = peakVar;
@@ -78,9 +83,9 @@ const energyCost = (price: number[], load: number[]) =>
   load.reduce((acc, kw, i) => acc + (price[i] * kw) / 1000, 0);
 
 export function evaluate(input: OptimizerInput): OptimizerResult {
-  const { base, forecast, actual, co2, eurPln, flex, window, capacityKw, demandCharge } = input;
-  const planned = solve(base, forecast, flex, window, capacityKw, demandCharge);
-  const perfect = solve(base, actual, flex, window, capacityKw, demandCharge);
+  const { base, forecast, actual, co2, eurPln, flex, window, capacityKw, demandCharge, available } = input;
+  const planned = solve(base, forecast, flex, window, capacityKw, demandCharge, available);
+  const perfect = solve(base, actual, flex, window, capacityKw, demandCharge, available);
 
   const peak = (xs: number[]) => Math.max(...xs);
   const baseEnergy = energyCost(actual, base);

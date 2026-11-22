@@ -56,6 +56,7 @@ export interface Profile {
   flexPct: number;
   windowH: number;
   capacityFactor: number;
+  availableHours: number[] | null; // clock hours load may move in/out; null = all
 }
 
 export interface OptimizerInput {
@@ -68,6 +69,7 @@ export interface OptimizerInput {
   window: number;
   capacityKw: number;
   demandCharge: number;
+  available?: boolean[]; // per-hour mask for this day; omitted = all hours
 }
 
 export interface OptimizerResult {

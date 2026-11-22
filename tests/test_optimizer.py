@@ -105,3 +105,27 @@ def test_evaluate_splits_energy_and_demand_savings():
     assert res["demandSavingsPln"] > 0
     assert res["savingsPln"] == pytest.approx(res["energySavingsPln"] + res["demandSavingsPln"])
     assert res["peakReductionPct"] > 5
+
+
+def test_ev_fleet_never_charges_while_vehicles_are_out():
+    from pipeline.profiles import available_for_day
+
+    profile = PROFILES["ev_fleet"]
+    base = base_for_day(profile, 24, 1.0)
+    available = available_for_day(profile, 24)
+    price = np.full(24, 900.0)
+    price[10:14] = 50.0  # tempting midday trough while the fleet is on the road
+    shifted = solve(base, price, profile.flex_pct, profile.window_h, base.max(), available=available)
+    unplugged = ~available
+    assert unplugged.sum() == 9  # 07:00-15:59
+    np.testing.assert_allclose(shifted[unplugged], base[unplugged])
+    assert shifted.sum() == pytest.approx(base.sum(), rel=1e-9)
+
+
+def test_available_for_day_follows_dst_rule():
+    from pipeline.profiles import available_for_day
+
+    profile = PROFILES["ev_fleet"]
+    assert len(available_for_day(profile, 23)) == 23
+    assert len(available_for_day(profile, 25)) == 25
+    assert available_for_day(PROFILES["cold_storage"], 24).all()

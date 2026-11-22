@@ -25,10 +25,14 @@ class Profile:
     # shifted schedule may never exceed the site's existing peak, since exceeding
     # contracted capacity is penalised under Polish distribution tariffs.
     capacity_factor: float = 1.0
+    # Local clock hours in which load may be moved in or out (None = all hours).
+    # Example: an EV fleet can only charge while vehicles are plugged in.
+    available_hours: tuple[int, ...] | None = None
 
     def to_dict(self) -> dict:
         d = asdict(self)
         d["base_kw"] = list(self.base_kw)
+        d["available_hours"] = list(self.available_hours) if self.available_hours else None
         return d
 
 
@@ -58,24 +62,35 @@ PROFILES: dict[str, Profile] = {
     "ev_fleet": Profile(
         id="ev_fleet",
         name="EV Fleet Charging Depot",
-        description="Last-mile delivery fleet returning in the evening; charging is highly deferrable.",
+        description="Last-mile delivery fleet, plugged in 16:00-07:00; charging is highly deferrable overnight.",
         base_kw=(
             650, 520, 380, 260, 180, 150, 140, 130, 120, 120, 130, 140,
             150, 160, 180, 250, 450, 800, 1100, 1200, 1200, 1150, 1000, 820,
         ),
         flex_pct=0.70,
         window_h=8,
+        available_hours=(0, 1, 2, 3, 4, 5, 6, 16, 17, 18, 19, 20, 21, 22, 23),
     ),
 }
 
 
-def base_for_day(profile: Profile, n_hours: int, scale: float = 1.0) -> np.ndarray:
-    """Base load for a local day with ``n_hours`` (23, 24 or 25) hours, in kW."""
-    base = list(profile.base_kw)
+def _adjust_for_dst(values: list, n_hours: int) -> list:
+    values = list(values)
     if n_hours == 23:
-        del base[SPRING_SKIPPED_HOUR_INDEX]
+        del values[SPRING_SKIPPED_HOUR_INDEX]
     elif n_hours == 25:
-        base.insert(FALL_REPEATED_HOUR_INDEX + 1, base[FALL_REPEATED_HOUR_INDEX])
+        values.insert(FALL_REPEATED_HOUR_INDEX + 1, values[FALL_REPEATED_HOUR_INDEX])
     elif n_hours != 24:
         raise ValueError(f"Unsupported day length: {n_hours} hours")
-    return np.asarray(base, dtype=float) * scale
+    return values
+
+
+def available_for_day(profile: Profile, n_hours: int) -> np.ndarray:
+    """Boolean mask of hours in which load may move, for a 23/24/25-hour day."""
+    hours = set(profile.available_hours) if profile.available_hours else set(range(24))
+    return np.asarray(_adjust_for_dst([h in hours for h in range(24)], n_hours), dtype=bool)
+
+
+def base_for_day(profile: Profile, n_hours: int, scale: float = 1.0) -> np.ndarray:
+    """Base load for a local day with ``n_hours`` (23, 24 or 25) hours, in kW."""
+    return np.asarray(_adjust_for_dst(profile.base_kw, n_hours), dtype=float) * scale

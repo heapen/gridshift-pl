@@ -70,6 +70,7 @@ describe("profiles", () => {
       expect(ts.windowH).toBe(py.window_h);
       expect(ts.capacityFactor).toBe(py.capacity_factor);
       expect(ts.name).toBe(py.name);
+      expect(ts.availableHours).toEqual(py.available_hours);
     }
   });
 });

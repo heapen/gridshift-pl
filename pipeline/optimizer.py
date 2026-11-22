@@ -7,6 +7,7 @@ Linear programme for one local day with hours t = 0..n-1:
     minimise    sum_t p_t * L_t / 1000  +  lambda * P
                 with L_t = b_t - sum_t' x[t,t'] + sum_s x[s,t]
     subject to  sum_t x[s,t] <= f * b_s        (per-hour flexible share)
+                x[s,t] = 0 unless s and t are available hours (e.g. EV plugged in)
                 L_t <= C                        (contracted capacity)
                 L_t <= P                        (peak definition)
 
@@ -30,14 +31,20 @@ from scipy.optimize import linprog
 from scipy.sparse import lil_matrix
 
 from pipeline.config import DEMAND_CHARGE_PLN_PER_KW_DAY, PUBLIC_DATA, ROOT
-from pipeline.profiles import PROFILES, base_for_day
+from pipeline.profiles import PROFILES, available_for_day, base_for_day
 
 MIN_PERFECT_SAVINGS_PLN = 1.0  # below this, capture rate is undefined
 PARITY_PATH = ROOT / "lib" / "__tests__" / "parity_fixtures.json"
 
 
-def _pairs(n: int, window: int) -> list[tuple[int, int]]:
-    return [(s, t) for s in range(n) for t in range(n) if s != t and abs(s - t) <= window]
+def _pairs(n: int, window: int, available=None) -> list[tuple[int, int]]:
+    ok = np.ones(n, dtype=bool) if available is None else np.asarray(available, dtype=bool)
+    return [
+        (s, t)
+        for s in range(n)
+        for t in range(n)
+        if s != t and abs(s - t) <= window and ok[s] and ok[t]
+    ]
 
 
 def solve(
@@ -47,6 +54,7 @@ def solve(
     window: int,
     capacity_kw: float,
     demand_charge: float = DEMAND_CHARGE_PLN_PER_KW_DAY,
+    available=None,
 ) -> np.ndarray:
     """Return the cost-minimising shifted load profile L_t (kW)."""
     base = np.asarray(base_kw, dtype=float)
@@ -55,7 +63,9 @@ def solve(
     if flex <= 0 or window <= 0:
         return base.copy()
 
-    pairs = _pairs(n, int(window))
+    pairs = _pairs(n, int(window), available)
+    if not pairs:
+        return base.copy()
     m = len(pairs)
     p_col = m  # index of the peak variable
     c = np.zeros(m + 1)
@@ -99,6 +109,7 @@ def evaluate(
     window: int,
     capacity_kw: float,
     demand_charge: float = DEMAND_CHARGE_PLN_PER_KW_DAY,
+    available=None,
 ) -> dict:
     """Plan on ``forecast``, bill on ``actual``; return KPI dict (camelCase keys)."""
     base = np.asarray(base_kw, dtype=float)
@@ -106,8 +117,8 @@ def evaluate(
     actual = np.asarray(actual, dtype=float)
     co2 = np.asarray(co2, dtype=float)
 
-    planned = solve(base, forecast, flex, window, capacity_kw, demand_charge)
-    perfect = solve(base, actual, flex, window, capacity_kw, demand_charge)
+    planned = solve(base, forecast, flex, window, capacity_kw, demand_charge, available)
+    perfect = solve(base, actual, flex, window, capacity_kw, demand_charge, available)
 
     base_energy, base_demand = _cost_pln(actual, base, demand_charge)
     plan_energy, plan_demand = _cost_pln(actual, planned, demand_charge)
@@ -160,10 +171,12 @@ def write_parity_fixtures(days_path=PUBLIC_DATA / "days.json", out_path=PARITY_P
                     "window": window,
                     "capacityKw": capacity,
                     "demandCharge": DEMAND_CHARGE_PLN_PER_KW_DAY,
+                    "available": available_for_day(profile, len(hours)).tolist(),
                 }
                 res = evaluate(
                     inputs["base"], inputs["forecast"], inputs["actual"], inputs["co2"],
                     inputs["eurPln"], flex, window, capacity,
+                    available=inputs["available"],
                 )
                 res.pop("shiftedKw")
                 cases.append(
